@@ -1,0 +1,83 @@
+<!--Dialog-->
+<div ng-show="mainEditor.show_mask" id="editor-data-dialog-mask"></div>
+
+<div ng-show="mainEditor.show_mask_dialog" id="editor-data-dialog" class="panel panel-default" ng-controller="editorFormController" style="background-color:#f5f5f5;width:300px;" ng-mouseup="mainEditor.form_change()" ng-keyup="mainEditor.form_change()">
+
+    <div class="panel-heading">Set Data of {{mainEditor.dialog_name}}<span style="  right: 5px;
+  position: absolute;
+  font: normal normal normal 12px Arial,Helvetica,Tahoma,Verdana,Sans-Serif;
+  font-weight: bold;
+  color: #666;
+  font-size: 16px;  font-size: 26px;
+  top: -2px;cursor:pointer;" ng-click="close()">&times;</span>
+    </div>
+    <ul class="nav nav-tabs" style="background-color:#f5f5f5;margin-top:10px;margin-bottom:0px;">
+        <li ng-init="current_tab='特有属性'" class="{{current_tab=='特有属性'&&'active'}}" ng-click="current_tab='特有属性'"><a href="#">特有属性</a>
+        </li>
+        <li class="{{current_tab=='通用属性'&&'active'}}" ng-click="current_tab='通用属性'"><a href="#">通用属性</a>
+        </li>
+
+    </ul>
+    <div class="panel-body editor-form-special-prop" ng-show="current_tab=='特有属性'">
+
+    </div>
+    <div class="panel-body editor-form-general-prop" ng-show="current_tab=='通用属性'">
+
+    </div>
+</div>
+<!--Form Code -->
+<div ng-controller="modelEditController" ng-show="mainEditor.globalShareData.editing=='模板编辑'" class=" panel-success scoll-panel editor-document-slide editor-editor" style="height:100%;position:relative;border:1px solid #d6e9c6;">
+    <div class="panel-heading" style=" position: relative; ">
+        <h3 class="panel-title " ng-bind="mainEditor.globalShareData.editing"></h3>
+    </div>
+
+    <div style="position: absolute;width: 100%;top: 37px;bottom: 34px;">
+        <div class="edit-model-online-div" style="border-bottom:1px solid #d6e9c6;">
+           <label class="head">表格编辑</label>
+            <textarea id="editor-model-form-code">
+            </textarea>
+        </div>
+        <div class="edit-model-online-div" style="">
+           <label class="head">模板编辑</label>
+            <textarea id="editor-model-code">
+            </textarea>
+        </div>
+        
+        
+    </div>
+
+
+    <button ng-click="implement()" class="btn btn-primary" style='display: block;
+  position: absolute;
+  bottom: 0;
+  width: 100;
+  width: 100%;border-radius:0px;'>测试</button>
+</div>
+
+
+<!--Main Edit Region-->
+<div ng-show="mainEditor.globalShareData.editing=='编辑区'" class="panel panel-info scoll-panel editor-document-slide" style="height:100%;position:relative;" uploader="uploader" options="{target:'edit'}" nv-file-drop="">
+    <div class="panel-heading" style="">
+        <h3 class="panel-title" ng-bind="mainEditor.globalShareData.editing"></h3>
+    </div>
+
+
+    <div id="editor-model-put-target" class="panel-body " style="padding:25px;padding-top:10px;" ng-mouseleave="mouse_leave()">
+        <div id="editor-block-container" class=" clearfix" dnd-list="models.lists" ng-style="models.globalPropData.style">
+
+            <div class="editor-block {{item.editor_selected?'selected':''}}" ng-repeat="item in models.lists " data-index="{{$index}}" draggable="true" dnd-draggable="item" dnd-moved="models.lists.splice($index, 1)" dnd-effect-allowed="move" dnd-selected="models.selected = item" editor-model="{{item.label}}" data-title="item.title" name="{{item.editor_model_config.name}}" ng-style="item.editor_general_block_style" ng-dblclick="mainEditor.call_tool('data',$index)">
+                <span ng-repeat="tool in mainEditor.editor_tools" ng-mouseover="tool.check_wrap($parent.$index)" ng-mouseleave="tool.check_wrap(false)" ng-show="editor_tool_show==$parent.$index" ng-click="tool.callback_wrap($parent.$index)" class="editor-only glyphicon {{tool.icon}} editor-block-tool" ng-style="tool.style"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Model Json-->
+<div ng-show="mainEditor.sys_setting.value.developer_mode&&$rootScope.current_tab!='方块管理'" class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Generated Model</h3>
+    </div>
+    <div class="panel-body">
+        <pre class="code">{{modelAsJson}}</pre>
+    </div>
+</div>

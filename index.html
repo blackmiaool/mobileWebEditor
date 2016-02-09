@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>MIOT-HTML编辑器</title>
+
+    <script src="dist/js/jquery/jquery-1.11.3.min.js"></script>
+    <script src="dist/js/jquery/jquery.qrcode.min.js"></script>
+
+    <script src="dist/js/angular/angular.js"></script>
+    <script src="dist/js/angular/angular-contenteditable.js"></script>
+    <script src="dist/js/angular/angular-drag-and-drop-lists.js"></script>
+    <script src="dist/js/angular/angular-animate.js"></script>
+    <script src="dist/js/angular/angular-route.min.js"></script>
+    <script src="dist/js/angular/angular-sanitize.min.js"></script>
+    <script src="dist/js/angular/angular-file-upload.min.js"></script>
+   
+   
+    <link rel="stylesheet" href="dist/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="dist/jsonform/deps/opt/spectrum.css">
+    <script src="dist/jsonform/deps/underscore.js"></script>
+    <script src="dist/jsonform/deps/opt/jsv.js"></script>
+    <script src="dist/jsonform/deps/opt/bootstrap-dropdown.js"></script>
+    <script src="dist/jsonform/deps/opt/spectrum.js"></script>
+    <script src="dist/jsonform/lib/jsonform.js"></script>
+
+    <link rel="stylesheet" href="dist/codemirror/codemirror.css">
+    <link rel="stylesheet" href="dist/codemirror/neat.css">
+    <script src="dist/codemirror/codemirror.js"></script>
+    <script src="dist/codemirror/selection-pointer.js"></script>
+    <script src="dist/codemirror/javascript.js"></script>
+    <script src="dist/codemirror/css.js"></script>
+    <script src="dist/codemirror/xml.js"></script>
+    <script src="dist/codemirror/htmlmixed.js"></script>
+    <script src="dist/codemirror/beautify.js"></script>
+    
+    
+    <link rel="stylesheet" href="dist/css/style.css"/>
+</head>
+ <div id="editor-just-used-to-cal-jsonform" style="display:none;"></div>
+<body id="editor-root" ng-cloak ng-app="main" ng-controller="rootController" uploader="uploader" options="{target:'body'}" nv-file-drop="">
+
+    <!--Head Bar -->
+    <div class="page-head" ng-include="'html/head-bar.html'">
+
+
+    </div>
+
+
+<!--    <div id="editor-just-used-to-cal-jsonform" style="display:none"></div>-->
+
+
+    <!--Left Bar-->
+    <div class="page-left-tab" ng-include="'html/left-bar.html'">
+    </div>
+
+
+    <!--Right Region-->
+    <div class="clearfix" style="padding-left: 300px;margin: 0px;width: 100%;height:100%;">
+        <!--    Main Editor-->
+        <div id="main-editor" ng-controller="mainEditorController as mainEditor" ng-include="'html/main-edit.html'" style="width:{{edit_area_width}}%">
+        </div>
+        <!--Preview-->
+        <div id="preview" ng-include="'html/preview.html'">
+
+        </div>
+
+    </div>
+    <p id="for_fill_form" style="display:none;">
+{
+    "schema": {
+ "data": {
+            "type": "string",
+            "title": "内容",
+            "default": "美腻的标题",
+        },
+        "source": {
+            "type": "string",
+            "title": "来源",
+            "default": "小米社区",
+        },
+        "date": {
+            "type": "string",
+            "title": "日期",
+            "default": "2015.8.10",
+        },
+        style: {
+            type: "object",
+            title: "样式",
+            properties: {
+                color: {
+                    "type": "string",
+                    "title": "颜色",
+                    "format": "color"
+                },
+            }
+        },
+
+
+    },
+
+}
+    </p>
+   
+    
+</body>
+
+
+<script>
+    MIOTEDITOR = {};
+</script>
+<script src="config.js"></script>
+<script src="js/editor-dialog.js"></script>
+<script>
+    (function () {
+        MIOTEDITOR.config = {};
+        MIOTEDITOR.models = [];
+        MIOTEDITOR.editorConfig(MIOTEDITOR.config);
+//        console.log("编辑器config", MIOTEDITOR.config)
+        var models = MIOTEDITOR.models;
+        var models_config = MIOTEDITOR.config.models;
+        for (var i in models_config) {
+            var models_len = models.length;
+            document.write("<script src='models/" + models_config[i] + "/form.js'><\/script>")
+        }
+    })();
+</script>
+<script src="dist/js/preview.js"></script>
+<script src="dist/js/editor-core.js"></script>
+<script src="dist/js/editor-left-bar.js"></script>
+<script src="dist/js/angular/angular-contextmenu.js"></script>
+<script src="dist/js/angular/angular-file-upload-directives.js"></script>
+
+

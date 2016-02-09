@@ -1,0 +1,7 @@
+<label contenteditable class="editor-head-text" ng-model="$rootScope.title"></label>
+<label ng-if="document_id" class="editor-head-id">ID:{{document_id}}</label>
+<label ng-if="!document_id" class="editor-head-id">未上传</label>
+<span id="editor-head-btn-save" ng-click="save()" class="glyphicon glyphicon-floppy-open editor-head-btn  {{saving&&'saving'}}" title="保存设计文件并上传"></span>
+<span id="editor-head-btn-export" ng-click="export()" class="glyphicon glyphicon-send editor-head-btn " title="导出HTML并上传" style="margin-right:20px;"></span>
+<label style="position:absolute;right:22px;bottom:-6px;font-size:12px;">保存</label>
+<label style="position:absolute;right:71px;bottom:-6px;font-size:12px;">导出</label>

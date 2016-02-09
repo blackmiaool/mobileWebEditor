@@ -1,0 +1,173 @@
+<!--Tabs-->
+<ul id="editor-left-bar-tabs" ng-controller="leftBarController" class="nav nav-pills nav-stacked">
+    <li ng-if="(sys_setting.value.developer_mode)||(!tab.developer)" ng-repeat="(tabname,tab) in tabs" data-name="{{tabname}}">
+        <a ng-class="{'selected':current_tab==tabname}" ng-click="select(tabname)">
+            <tab-heading class="templates">
+                <span class="glyphicon {{tab.graph}}"></span>
+                <span class="name">{{tabname}}</span>
+            </tab-heading>
+        </a>
+    </li>
+</ul>
+<!--Insert model-->
+<div id="model-tab" ng-controller="editorTabModel" ng-show="$parent.current_tab=='插入模板'" class="panel  left-big-panel">
+    <!--Model Kind-->
+    <ul ng-init="editor_model_kind_to_icon={h:'glyphicon-fire',p:'glyphicon-th',img:'glyphicon-picture',btn:'glyphicon-hand-up',other:'glyphicon-option-horizontal'}" class="nav nav-pills">
+        <li ng-repeat="tab in tabs">
+            <a ng-click="select(tab.kind)" tab-heading-transclude="" class="ng-binding {{current_tab==tab.kind&&'active'}}">
+                <tab-heading class="templates ng-scope">
+                    <span class="glyphicon {{editor_model_kind_to_icon[tab.kind]}}"></span>
+
+                    <span class="room-name ng-binding" ng-bind="tab.name"></span>
+                </tab-heading>
+            </a>
+        </li>
+    </ul>
+    <!--Models to Drag-->
+    <div data-kind="{{tab.kind}}" ng-show="current_tab==tab.kind" ng-repeat="tab in tabs">
+
+        <ul class="model-list" dnd-list="models.lists" dnd-allowed-types="['nothingallowed']">
+
+            <li ng-repeat="model in models.lists " data-name="{{model.editor_model_config.name}}" dnd-draggable="model" dnd-effect-allowed="copy" dnd-selected="models.selected = model" ng-class="{'selected': models.selected === model}" ng-click="append(model)" context="context1" on-right-click="ShowContextMenu(model)" title="{{model.editor_model_config.name}}">
+
+            </li>
+        </ul>
+
+    </div>
+    <div>
+        <ul id="context1" class="dropdown-menu" style="color:black;">
+
+            <li ng-show="sys_setting.value.developer_mode"><a ng-click="edit()">编辑</a></li>
+            <li><a ng-click="sync_model()">同步</a></li>
+        </ul>
+    </div>
+
+</div>
+
+
+<!--Global Property-->
+<div id="global_prop_tab" ng-controller="globalPropController" ng-show="$parent.current_tab=='全局属性'" class="panel  left-big-panel left-bar-form">
+    <div class="panel-group">
+    </div>
+</div>
+
+<!--Your Picture Lib  -->
+<div id="your_picture_lib_tab" ng-controller="yourPictureLibController" ng-show="$parent.current_tab=='你的图库'" class="panel  left-big-panel" style="padding:5px;position:relative;" nv-file-drop="" uploader="uploader" options="{target:'lib'}">
+   <div ng-click="upload_click()"><input type="file" nv-file-select="" uploader="uploader" multiple="" style="width:100%;height:34px;position:relative;z-index:1;opacity:0;" options="{target:'lib'}"></div>
+    
+    <div style="  width: 100%;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  right: 0px;
+  padding:5px;
+  display: block;" ng-init="upload_mode=''" ng-click="upload()">
+        <button class="btn btn-primary" style="width:100%;">上传图片（可多选）</button>
+
+    </div>
+    <select ng-model="upload_mode" ng-init="upload_mode='pic_link_full_default_empty'" style="margin-top:10px;">        
+        <option value="pic_link_full_default_empty">上传并导入无缝图</option>
+        <option value="pic_link_full_default_empty_gap"  selected="selected">上传并导入有缝图</option>
+        <option value="pic_link_half">上传并导入并排无缝图</option>
+        <option value="you_pure_upload_pic">你只是想上传图</option>
+    </select>
+
+
+
+
+
+
+    <textarea name="" id="" cols="30" rows="2" style="margin-top:10px;" ng-model="current_remote_url"></textarea>
+    <div ng-repeat="item in uploader.queue | orderBy:$index:true" style="display:inline-block;width:50%;margin:0px;">
+        <div ng-show="uploader.isHTML5" ng-thumb="{ file: item._file, width:100 }" ng-click="get_url(item)"></div>
+        <div ng-show="item.progress!=100" class="progress-bar" role="progressbar" ng-style="{ 'width': item.progress + '%' }" style="float:initial;height:10px;"></div>
+    </div>
+
+</div>
+
+<!--Document List-->
+<div id="document_list_tab" ng-controller="documentListController" ng-show="$parent.current_tab=='文档列表'" class="panel left-big-panel">
+    <div class="panel-group">
+        <button class="btn btn-primary" style="width:100%;margin-bottom:5px;border-radius:0px;" ng-click="update_list()">刷新</button>
+        <input ng-model="search_obj_title.title" type="text" placeholder="输入标题搜索" style="width:100%;margin-top:5px;margin-bottom:5px;">
+        <input ng-model="search_obj_id.id" type="text" placeholder="输入id搜索" style="width:100%;margin-top:5px;margin-bottom:10px;">
+        <div class="search-hot" style="text-align:left;">
+            <button ng-repeat="item in search_items" ng-click="search_obj_title.title=item" class="btn btn-primary search-item " style="margin:2px;padding: 1px 10px;">{{item}}</button>
+        </div>
+
+        <div ng-repeat="li in list | filter:search_obj_title | filter:search_obj_id:judge_id" class="panel panel-default">
+            <div ng-click="expand = !expand" class="panel-heading" ng-bind="li.title">
+            </div>
+            <div class="panel-body editor-document-slide" ng-show="expand">
+                <ul style="list-style-type:none;margin:0px;">
+                    <li>最后修改：{{li.change_time*1000|date:'yyyy/M/d/ HH:mm'}}</li>
+                    <li>ID：{{li.id}}</li>
+                </ul>
+                <button class="btn btn-primary" style="width:100%;" ng-click="edit(li.id)">编辑</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!--Output-->
+<div id="output_result_tab" ng-controller="outputController" ng-show="$parent.current_tab=='输出结果'" class="panel  left-big-panel">
+    <div style="width: 100%;
+            min-height: 40px;
+            float: right;padding:10px;">
+        <div class="panel panel-default" style="">
+            <div class="panel-body" style="text-align:left;">
+                <h5>Html</h5>
+                <textarea id="editor-generated-code">
+                </textarea>
+                <h5>Json</h5>
+                <textarea id="editor-generated-json">
+                </textarea>
+                <br>
+                <script>
+                    codemirror_editor = CodeMirror.fromTextArea(document.getElementById("editor-generated-code"), {
+                        matchBrackets: true,
+                        theme: "neat"
+                    });
+                </script>
+                <a ng-href="{{editor_html_href}}" style="word-break: break-all;">{{editor_html_href}}</a>
+                <div id="editor_html_qrcode"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--System Setting-->
+<div id="sys_setting_tab" ng-controller="sysSettingController" ng-show="$parent.current_tab=='系统设置'" class="panel left-big-panel left-bar-form">
+    <div class="panel-group" ng-mouseup="form_change()" ng-keyup="form_change()"></div>
+    <label >编辑区宽度</label>
+    <input ng-init="$rootScope.edit_area_width=50" ng-model="$rootScope.edit_area_width" type="range" max=50 min=0>
+
+</div>
+<!--Data Recovery-->
+<div id="data_recovery" ng-controller="dataRecoveryController" ng-show="$parent.current_tab=='数据导入'" class="panel left-big-panel left-bar-form">
+    <button class="btn btn-primary" style="margin-bottom:10px;width:100%;" ng-click="import_list()">从json直接导入model_list数据</button>
+    <button class="btn btn-primary" style="margin-bottom:10px;width:100%;" ng-click="import_escape()">从escape导入数据</button>
+    <button class="btn btn-primary" style="margin-bottom:10px;width:100%;" ng-click="import_iframe_json()">导入iframe的json数据</button>
+    <button class="btn btn-primary" style="margin-bottom:10px;width:100%;" ng-click="output_html()">直接输出数据html</button>
+    <button class="btn btn-primary" style="margin-bottom:10px;width:100%;" ng-click="import_url()">从网址得到html进行parse</button>
+    <textarea name="" id="" cols="30" rows="10" ng-model="model_data" style="width:100%;"></textarea>
+</div>
+<!--Models Manage-->
+<div id="models_manage_tab" ng-controller="modelsManageController" ng-show="$parent.current_tab=='方块管理'" class="panel left-big-panel left-bar-form">
+    <div class="form" style="">
+
+    </div>
+    <p class="editor-tip">编辑完成？请选择</p>
+    <button class="btn btn-primary" style="width:100%;margin-bottom:5px;border-radius:0px;" ng-click="upload('server')">上传至服务器</button>
+    <p class="editor-tip">想测试？没有连接到服务器？想等完全编辑完再上线？请选择</p>
+    <button class="btn btn-primary" style="width:100%;margin-bottom:5px;border-radius:0px;" ng-click="upload('browser')">暂存在浏览器</button>
+    <p class="editor-tip">想存为内置方块？请修改编辑器源码。</p>
+    <p class="editor-tip">
+    </p>
+</div>
+<div style="overflow:auto;">
+    <a ng-href="{{href}}" style=""><img ng-src="{{src}}" src="http://mg.soupingguo.com/articleimg/600/100/082/395/100223595.jpg" style="width:100%;float:left;"></a>
+</div>

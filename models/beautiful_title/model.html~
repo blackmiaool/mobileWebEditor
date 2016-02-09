@@ -1,0 +1,1 @@
+<p contenteditable ng-model="data"  ng-style="style" style="color:black;border-left:4px solid black;font-size:20px;margin-bottom:0px;overflow:hidden;padding-left:5px;padding-top:5px;padding-bottom:5px;">美腻的标题</p>
